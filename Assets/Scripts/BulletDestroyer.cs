@@ -6,6 +6,7 @@ public class BulletDestroyer : MonoBehaviour {
 
     public int maxDeflectCount = 10;
     public float maxDistance = 100f;
+	public Transform shotFrom;
 
     private Vector2 initialPos;
 	private int deflectCount = 0;
@@ -18,14 +19,21 @@ public class BulletDestroyer : MonoBehaviour {
 	void FixedUpdate () {
 		float dist = Vector2.Distance (initialPos, transform.position);
 		if(dist >= maxDistance){
-			Destroy (transform.gameObject);
+			DestroyBullet ();
 		}
 	}
 
     void OnCollisionEnter2D(Collision2D coll) {
 		deflectCount++;
 		if(deflectCount >= maxDeflectCount){
-			Destroy (transform.gameObject);
+			DestroyBullet ();
 		}
     }
+
+	void DestroyBullet(){
+		// call the shooter player object that this bullet is consumed
+		shotFrom.GetComponentInChildren<BulletInventSys> ().BulletConsumed ();
+		Destroy (transform.gameObject);
+	}
+
 }

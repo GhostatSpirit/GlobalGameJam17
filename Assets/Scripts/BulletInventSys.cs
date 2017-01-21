@@ -1,21 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BulletInventSys : MonoBehaviour {
 	// Tag for this player's bullet
 	public string bulletTag = "1Pbullet";
 	// Num of bullets player initially have
-	public float initBulletCount = 1;
+	public int initBulletCount = 1;
 	int bulletCount = 0;
 	// distance when player can retrieve the bullet
 	public float retrieveDist = 2.0f;
 	// attract force
-	public float attractForce = 2.0f;
+	//public float attractForce = 2.0f;
 	//bool leftTrigger = false;
 	//bool enteredTrigger = false;
-
 	//Hashtable bulletSet = new Hashtable();
+	public float regenerateDelay = 5f;
+
+	public Text bulletStatusText;
+
+	void Start(){
+		bulletCount = initBulletCount;
+		bulletStatusText.text = "Bullet: " + bulletCount.ToString ();
+	}
 
 	void OnTriggerLeave2D(Collider2D other){
 //		if(bulletSet.Contains(other.gameObject)){
@@ -75,8 +83,24 @@ public class BulletInventSys : MonoBehaviour {
 //		}
 //	}
 
+	public void BulletConsumed(){
+		Invoke ("AddOneBullet", regenerateDelay);
+		bulletStatusText.text = "Reloading...";
+	}
+
+	void AddOneBullet(){
+		bulletCount++;
+		bulletStatusText.text = "Bullet: " + bulletCount.ToString ();
+	}
+
 	public void AddBullet(int addCount){
 		bulletCount += addCount;
+		bulletStatusText.text = "Bullet: " + bulletCount.ToString ();
+	}
+
+	public void UseBullet(int minusCount){
+		bulletCount -= minusCount;
+		bulletStatusText.text = "Bullet: " + bulletCount.ToString ();
 	}
 
 	public int GetBullet(){
