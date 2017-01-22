@@ -7,6 +7,7 @@ public class PlayerDeath : MonoBehaviour {
 	public string enemyBulletTag;
 	public GameObject deadPlayer;
 	public Transform playerCamera;
+	public Transform restartControl;
 	// Use this for initialization]
 	SpriteRenderer mySpriteRenderer;
 	void Start () {
@@ -34,6 +35,11 @@ public class PlayerDeath : MonoBehaviour {
 		GameObject deadPlayerGO = Instantiate(deadPlayer, transform.position, transform.rotation);
 		playerCamera.GetComponent<Camera2DFollow> ().target = deadPlayerGO.transform;
 		deadPlayerGO.transform.localScale = transform.localScale;
+
+		// show restart screen
+		restartControl.GetComponent<RestartControl> ().Restart ();
+
+
 		Destroy (transform.gameObject);
 
 	}
