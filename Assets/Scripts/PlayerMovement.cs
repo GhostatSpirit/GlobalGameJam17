@@ -25,6 +25,12 @@ public class PlayerMovement: MonoBehaviour {
 	public bool moveEnabled;
 	public bool turnEnabled;
 
+	public AudioClip moveSound;
+	// default: delay 1 second and play again
+	public float playSoundGap = 1f;
+	public float volumeScale = 0.8f;
+	bool playingSound = false;
+
     Vector2 moveVector;
     Rigidbody2D myRigidbody;
 	SpriteRenderer mySpriteRenderer;
@@ -33,11 +39,13 @@ public class PlayerMovement: MonoBehaviour {
 	float deltaTime = 0f;
 	int frameIter = 0;
 
+	AudioSource myAudioSource;
+
 	// Use this for initialization
 	void Start () {
         myRigidbody = GetComponent<Rigidbody2D>();
-
 		mySpriteRenderer = GetComponent<SpriteRenderer> ();
+		myAudioSource = GetComponent<AudioSource> ();
 
 		moveEnabled = true;
 		turnEnabled = true;
@@ -113,6 +121,12 @@ public class PlayerMovement: MonoBehaviour {
 				lastDir = currentDir;
 			}
 
+			// deal with sounds here
+			if(!playingSound && moveVector.magnitude > 0.5f){
+				playingSound = true;
+				myAudioSource.PlayOneShot (moveSound, volumeScale);
+				Invoke ("ResetSound", playSoundGap);
+			}
 
 		}
 
@@ -127,6 +141,10 @@ public class PlayerMovement: MonoBehaviour {
 		
 
     }
+
+	void ResetSound(){
+		playingSound = false;
+	}
 
 	// translate a Direction enum to a normalized Vector3
 	Direction Vector2Direction(Vector2 vec){

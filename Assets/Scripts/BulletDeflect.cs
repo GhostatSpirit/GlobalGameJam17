@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class BulletDeflect : MonoBehaviour {
 	Rigidbody2D myRigidbody;
-
+	public AudioClip reflectSound;
 	[HideInInspector] public float initialVelocity;
+	AudioSource myAudioSource;
 	// Use this for initialization
 	void Start () {
 		myRigidbody = GetComponent<Rigidbody2D> ();
+		myAudioSource = GetComponent<AudioSource> ();
 	}
 	
 	// Update is called once per frame
@@ -24,7 +26,10 @@ public class BulletDeflect : MonoBehaviour {
 		ContactPoint2D contact = coll.contacts [0];
 		//Debug.Log ("Hit!");
 		//Debug.DrawRay (contact.point, contact.normal, Color.white);
-
+		// play the reflect sound
+		if (coll.transform.tag != "Player") {
+			myAudioSource.PlayOneShot (reflectSound);
+		}
 		Vector2 newDirection = Vector2.Reflect (transform.up, contact.normal);
 		transform.up = newDirection.normalized;
 		myRigidbody.velocity = newDirection.normalized * initialVelocity;

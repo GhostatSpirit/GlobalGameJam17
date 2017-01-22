@@ -31,8 +31,8 @@ public class BulletDestroyer : MonoBehaviour {
     }
 
 	void DestroyBullet(){
-		// call the shooter player object that this bullet is consumed
-		shotFrom.GetComponentInChildren<BulletInventSys> ().BulletConsumed ();
+		// call the shooter player object that this bullet will be destroyed
+		shotFrom.GetComponentInChildren<BulletInventSys> ().DestoryBullet(1);
 		Destroy (transform.gameObject);
 	}
 

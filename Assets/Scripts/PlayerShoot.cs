@@ -13,10 +13,13 @@ public class PlayerShoot : MonoBehaviour {
 
 	public bool isPS4Controller;
 
+	public AudioClip shootSound;
 
+	AudioSource myAudioSource;
 	// Use this for initialization
 	void Start () {
 		//isCooledDown = true;
+		myAudioSource = transform.parent.GetComponent<AudioSource> ();
 	}
 	
 	// Update is called once per frame
@@ -47,6 +50,7 @@ public class PlayerShoot : MonoBehaviour {
 
 		// check if there are enough bullets
 		if(transform.parent.GetComponentInChildren<BulletInventSys>().GetBullet() > 0){
+			// use 1 bullet
 			transform.parent.GetComponentInChildren<BulletInventSys> ().UseBullet (1);
 			// instantiate the bullet prefab
 			GameObject bulletObj = Instantiate (bulletPrefab, transform.position, transform.rotation);
@@ -54,6 +58,8 @@ public class PlayerShoot : MonoBehaviour {
 			bulletObj.GetComponent<Rigidbody2D> ().velocity = transform.up.normalized * initialVelocity;
 			// tell the bulletObj the init velocity
 			bulletObj.GetComponent<BulletDeflect> ().initialVelocity = initialVelocity;
+			// play shoot sound
+			myAudioSource.PlayOneShot(shootSound);
 		}
 	}
 

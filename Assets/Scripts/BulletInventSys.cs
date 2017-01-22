@@ -8,7 +8,8 @@ public class BulletInventSys : MonoBehaviour {
 	public string bulletTag = "1Pbullet";
 	// Num of bullets player initially have
 	public int initBulletCount = 1;
-	int bulletCount = 0;
+	int equipedBulletCount = 0;
+	int totalBulletCount = 0;
 	// distance when player can retrieve the bullet
 	public float retrieveDist = 2.0f;
 	// attract force
@@ -20,9 +21,18 @@ public class BulletInventSys : MonoBehaviour {
 
 	public Text bulletStatusText;
 
+	public AudioClip retrieveSound;
+	public AudioClip outOfAmmoSound;
+	public AudioClip reloadedSound;
+
+	AudioSource myAudioSource;
+
 	void Start(){
-		bulletCount = initBulletCount;
-		bulletStatusText.text = "Bullet: " + bulletCount.ToString ();
+		equipedBulletCount = initBulletCount;
+		totalBulletCount = initBulletCount;
+
+		bulletStatusText.text = "Bullet: " + equipedBulletCount.ToString ();
+		myAudioSource = transform.parent.GetComponent<AudioSource>();
 	}
 
 	void OnTriggerLeave2D(Collider2D other){
@@ -48,8 +58,10 @@ public class BulletInventSys : MonoBehaviour {
 			//Debug.Log (Vector2.Distance (other.transform.position, transform.position));
 			if (Vector2.Distance (other.transform.position, transform.position) <= retrieveDist){
 				// retrieve the bullet
+				// play sound effect
+				myAudioSource.PlayOneShot(retrieveSound);
 				//Debug.Log ("bullet in");
-				AddBullet (1);
+				RetrieveBullet (1);
 //				bulletSet.Remove (other.gameObject);
 				Destroy (other.gameObject);
 				return;
@@ -83,28 +95,41 @@ public class BulletInventSys : MonoBehaviour {
 //		}
 //	}
 
-	public void BulletConsumed(){
-		Invoke ("AddOneBullet", regenerateDelay);
-		bulletStatusText.text = "Reloading...";
+	public void CreateBullet(int addCount){
+		if (totalBulletCount == 0) {
+			myAudioSource.PlayOneShot (reloadedSound);
+		}
+		equipedBulletCount += addCount;
+		totalBulletCount += addCount;
+		bulletStatusText.text = "Bullet: " + equipedBulletCount.ToString ();
 	}
 
-	void AddOneBullet(){
-		bulletCount++;
-		bulletStatusText.text = "Bullet: " + bulletCount.ToString ();
-	}
-
-	public void AddBullet(int addCount){
-		bulletCount += addCount;
-		bulletStatusText.text = "Bullet: " + bulletCount.ToString ();
+	public void RetrieveBullet(int addCount){
+		equipedBulletCount += addCount;
+		bulletStatusText.text = "Bullet: " + equipedBulletCount.ToString ();
 	}
 
 	public void UseBullet(int minusCount){
-		bulletCount -= minusCount;
-		bulletStatusText.text = "Bullet: " + bulletCount.ToString ();
+		equipedBulletCount -= minusCount;
+		bulletStatusText.text = "Bullet: " + equipedBulletCount.ToString ();
+	}
+
+	public void DestoryBullet(int minusCount){
+		totalBulletCount -= minusCount;
+		if(totalBulletCount == 0){
+			// need to init reload function
+			myAudioSource.PlayOneShot (outOfAmmoSound);
+			Invoke ("CreateOneBullet", regenerateDelay);
+			bulletStatusText.text = "Reloading...";
+		}
+	}
+
+	void CreateOneBullet(){
+		CreateBullet (1);
 	}
 
 	public int GetBullet(){
-		return bulletCount;
+		return equipedBulletCount;
 	}
 
 }
