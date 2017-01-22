@@ -48,7 +48,7 @@ public class BulletInventSys : MonoBehaviour {
 			//Debug.Log (Vector2.Distance (other.transform.position, transform.position));
 			if (Vector2.Distance (other.transform.position, transform.position) <= retrieveDist){
 				// retrieve the bullet
-				Debug.Log ("bullet in");
+				//Debug.Log ("bullet in");
 				AddBullet (1);
 //				bulletSet.Remove (other.gameObject);
 				Destroy (other.gameObject);

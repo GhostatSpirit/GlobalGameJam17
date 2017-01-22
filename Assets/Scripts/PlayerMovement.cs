@@ -15,11 +15,12 @@ public class PlayerMovement: MonoBehaviour {
 	public Direction initialFacing = Direction.DOWN;
 	//public Transform playerFeet;
 
-	public Sprite upSprite;
-	public Sprite downSprite;
-	public Sprite leftSprite;
-	public Sprite rightSprite;
+	public Sprite[] upSprite;
+	public Sprite[] downSprite;
+	public Sprite[] leftSprite;
+	public Sprite[] rightSprite;
 
+	public float frameDuration = 0.16f;
 
 	public bool moveEnabled;
 	public bool turnEnabled;
@@ -28,6 +29,9 @@ public class PlayerMovement: MonoBehaviour {
     Rigidbody2D myRigidbody;
 	SpriteRenderer mySpriteRenderer;
 
+	Direction lastDir;
+	float deltaTime = 0f;
+	int frameIter = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -37,6 +41,18 @@ public class PlayerMovement: MonoBehaviour {
 
 		moveEnabled = true;
 		turnEnabled = true;
+
+		lastDir = initialFacing;
+
+		if (initialFacing == Direction.DOWN) {
+			mySpriteRenderer.sprite = downSprite[0];
+		} else if (initialFacing == Direction.LEFT) {
+			mySpriteRenderer.sprite = leftSprite[0];
+		} else if (initialFacing == Direction.RIGHT) {
+			mySpriteRenderer.sprite = rightSprite[0];
+		} else if (initialFacing == Direction.UP) {
+			mySpriteRenderer.sprite = upSprite[0];
+		}
 	}
 	
 	// Update is called once per frame
@@ -54,15 +70,50 @@ public class PlayerMovement: MonoBehaviour {
 		if (moveVector.magnitude != 0f) {
 			// change sprite according to moveVector
 			Direction currentDir = Vector2Direction (moveVector);
-			if (currentDir == Direction.DOWN) {
-				mySpriteRenderer.sprite = downSprite;
-			} else if (currentDir == Direction.LEFT) {
-				mySpriteRenderer.sprite = leftSprite;
-			} else if (currentDir == Direction.RIGHT) {
-				mySpriteRenderer.sprite = rightSprite;
-			} else if (currentDir == Direction.UP) {
-				mySpriteRenderer.sprite = upSprite;
+
+			if (lastDir == currentDir) {
+				deltaTime += Time.deltaTime;
+				if (deltaTime > frameDuration) {
+					// switch to the next Sprit
+					deltaTime = 0;
+					frameIter++;
+					if (currentDir == Direction.DOWN) {
+						if (frameIter >= downSprite.Length) {
+							frameIter -= downSprite.Length;
+						}
+						mySpriteRenderer.sprite = downSprite [frameIter];
+					} else if (currentDir == Direction.LEFT) {
+						if (frameIter >= leftSprite.Length) {
+							frameIter -= leftSprite.Length;
+						}
+						mySpriteRenderer.sprite = leftSprite [frameIter];
+					} else if (currentDir == Direction.RIGHT) {
+						if (frameIter >= rightSprite.Length) {
+							frameIter -= rightSprite.Length;
+						}
+						mySpriteRenderer.sprite = rightSprite [frameIter];
+					} else if (currentDir == Direction.UP) {
+						if (frameIter >= upSprite.Length) {
+							frameIter -= upSprite.Length;
+						}
+						mySpriteRenderer.sprite = upSprite [frameIter];
+					}
+				}
+			} else {
+				frameIter = 0;
+				if (currentDir == Direction.DOWN) {
+					mySpriteRenderer.sprite = downSprite [0];
+				} else if (currentDir == Direction.LEFT) {
+					mySpriteRenderer.sprite = leftSprite [0];
+				} else if (currentDir == Direction.RIGHT) {
+					mySpriteRenderer.sprite = rightSprite [0];
+				} else if (currentDir == Direction.UP) {
+					mySpriteRenderer.sprite = upSprite [0];
+				}
+				lastDir = currentDir;
 			}
+
+
 		}
 
 	}

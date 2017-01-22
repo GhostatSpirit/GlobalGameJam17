@@ -15,14 +15,17 @@ public class DotLightOptimizer : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
+		if(this.gameObject.layer != other.gameObject.layer){
+			return;
+		}
 		if (transform.GetComponent<InstantiateTimeRecorder> () != null
 		   && other.transform.GetComponent<InstantiateTimeRecorder> () != null) {
-			Debug.Log ("trigger hit");
+			//Debug.Log ("trigger hit");
 			float thisTime = transform.GetComponent<InstantiateTimeRecorder> ().GetTime ();
 			float otherTime = other.transform.GetComponent<InstantiateTimeRecorder> ().GetTime ();
 			if (thisTime < otherTime) {
 				// Destory black light that hits
-				Destroy (this.gameObject);
+				Destroy (this.transform.parent.gameObject);
 //				Transform[] ts = this.gameObject.GetComponentsInChildren<Transform> ();
 //				foreach (Transform t in ts){
 //					if (t.tag == "Shadow"){
@@ -32,7 +35,7 @@ public class DotLightOptimizer : MonoBehaviour {
 //						
 //				}
 			} else if (otherTime < thisTime){
-				Destroy (other.gameObject);
+				Destroy (other.transform.parent.gameObject);
 //				// Destory black light that hits
 //				Transform[] ts = other.gameObject.GetComponentsInChildren<Transform> ();
 //				foreach (Transform t in ts){
