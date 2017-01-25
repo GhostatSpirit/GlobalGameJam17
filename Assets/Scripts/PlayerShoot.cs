@@ -1,46 +1,64 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InControl;
 
 public class PlayerShoot : MonoBehaviour {
 	public float initialVelocity = 30f;
-	public string shootTriggerName;
+
+	// replaced with InControl
+	//public string shootTriggerName;
+	public int playerIndex = 0;
+	public Transform deviceAssigner;
+	InputDevice myInputDevice;
+
 	public GameObject bulletPrefab;
 	public float coolDownDelay = 5f;
 
-	private bool m_isAxisInUse;
+	//private bool m_isAxisInUse;
 	//private bool isCooledDown;
 
-	public bool isPS4Controller;
+	//public bool isPS4Controller;
 
 	public AudioClip shootSound;
 
 	AudioSource myAudioSource;
+
 	// Use this for initialization
 	void Start () {
 		//isCooledDown = true;
 		myAudioSource = transform.parent.GetComponent<AudioSource> ();
+		//myInputDevice = InputManager.Devices [deviceIndex];
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-		float triggerAxis = Input.GetAxis (shootTriggerName);
-		//Debug.Log (triggerAxis);
-		if(isPS4Controller){
-			// -1 ~ 1 -> 0 ~ 1
-			triggerAxis = triggerAxis / 2.0f + 0.5f;
+		myInputDevice = deviceAssigner.
+			GetComponent<DeviceAssigner>().GetPlayerDevice(playerIndex);
+		if(myInputDevice == null){
+			return;
 		}
 
-		if(Input.GetAxis(shootTriggerName) > 0.5f && !m_isAxisInUse){
-
-			m_isAxisInUse = true;
+		if(myInputDevice.RightTrigger.WasPressed){
 			ShootWave ();
+		}
 
-		}
-		if(Input.GetAxis(shootTriggerName) == 0){
-			m_isAxisInUse = false;
-		}
+//		float triggerAxis = Input.GetAxis (shootTriggerName);
+//		//Debug.Log (triggerAxis);
+//		if(isPS4Controller){
+//			// -1 ~ 1 -> 0 ~ 1
+//			triggerAxis = triggerAxis / 2.0f + 0.5f;
+//		}
+//
+//		if(Input.GetAxis(shootTriggerName) > 0.5f && !m_isAxisInUse){
+//
+//			m_isAxisInUse = true;
+//			ShootWave ();
+//
+//		}
+//		if(Input.GetAxis(shootTriggerName) == 0){
+//			m_isAxisInUse = false;
+//		}
 	}
 
 	void ShootWave(){

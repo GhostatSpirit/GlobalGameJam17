@@ -1,14 +1,17 @@
 ﻿// Script by Yang Liu
-
 using UnityEngine;
 using System.Collections;
+using InControl;
 
 public class PlayerMovement: MonoBehaviour {
 
     public float moveSpeed = 50f;
 
-	public string horizontalAxisName = "Horizontal";
-	public string verticalAxisName = "Vertical";
+	// commented out Unity Input scripts
+	// public string horizontalAxisName = "Horizontal";
+	// public string verticalAxisName = "Vertical";
+	public int playerIndex = 0;
+	public Transform deviceAssigner;
 
 	public enum Direction {UP, DOWN, LEFT, RIGHT};
 
@@ -34,6 +37,7 @@ public class PlayerMovement: MonoBehaviour {
     Vector2 moveVector;
     Rigidbody2D myRigidbody;
 	SpriteRenderer mySpriteRenderer;
+	InputDevice myInputDevice;
 
 	Direction lastDir;
 	float deltaTime = 0f;
@@ -62,12 +66,23 @@ public class PlayerMovement: MonoBehaviour {
 			mySpriteRenderer.sprite = upSprite[0];
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		// get the axis values, construct a vector and normalize it
-		float horizontal = Input.GetAxis (horizontalAxisName);
-		float vertical = Input.GetAxis(verticalAxisName);
+		// commented out Unity Input scripts
+//		float horizontal = Input.GetAxis (horizontalAxisName);
+//		float vertical = Input.GetAxis(verticalAxisName);
+		myInputDevice = deviceAssigner.
+						GetComponent<DeviceAssigner>().GetPlayerDevice(playerIndex);
+		
+		if(myInputDevice == null){
+			return;
+		}
+
+		float horizontal = myInputDevice.LeftStickX;
+		float vertical = myInputDevice.LeftStickY;
+
         moveVector = new Vector2(horizontal, vertical);
 
 		if(moveVector.magnitude > 1f){
@@ -133,7 +148,9 @@ public class PlayerMovement: MonoBehaviour {
 	}
 
     void FixedUpdate() {
-
+		if(myInputDevice == null){
+			return;
+		}
 		if (moveEnabled) {
 			myRigidbody.velocity = moveVector * moveSpeed * Time.deltaTime * 10f;
 		}
@@ -186,3 +203,4 @@ public class PlayerMovement: MonoBehaviour {
 		//Debug.Log (angle);
 	}
 }
+

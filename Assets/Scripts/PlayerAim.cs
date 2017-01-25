@@ -1,10 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InControl;
 
 public class PlayerAim : MonoBehaviour {
-	public string horizontalAxisName = "Horizontal";
-	public string verticalAxisName = "Vertical";
+	// replaced with InControl
+	//public string horizontalAxisName = "Horizontal";
+	//public string verticalAxisName = "Vertical";
+
+	public int playerIndex = 0;
+	public Transform deviceAssigner;
+	InputDevice myInputDevice;
 
 	Vector2 moveVector;
 	public float radialDeadZone = 0.1f;
@@ -17,10 +23,18 @@ public class PlayerAim : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		myInputDevice = deviceAssigner.
+			GetComponent<DeviceAssigner>().GetPlayerDevice(playerIndex);
+
+		if(myInputDevice == null){
+			return;
+		}
 		// get the axis values, construct a vector and normalize it
-		float horizontal = Input.GetAxis (horizontalAxisName);
-		float vertical = Input.GetAxis(verticalAxisName);
+		float horizontal = myInputDevice.RightStickX;
+		float vertical = myInputDevice.RightStickY;
+
 		moveVector = new Vector3(horizontal, vertical, 0f);
+
 
 		if (moveVector.magnitude > radialDeadZone) {
 			var currentRot = Quaternion.LookRotation (Vector3.forward, moveVector);
