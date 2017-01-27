@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using InControl;
 
 public class RestartControl : MonoBehaviour {
 	public GameObject Image;
@@ -16,7 +17,7 @@ public class RestartControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(canRestart){
-			if(Input.GetButtonDown("Submit")){
+			if(InputManager.ActiveDevice.Action1.IsPressed){
 					SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 			}
 		}
