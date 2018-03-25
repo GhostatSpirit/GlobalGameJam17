@@ -31,3 +31,4 @@ sysinfo.txt
 
 # InControl Licensed files
 /Assets/InControl/
+/.vs/*

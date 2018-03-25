@@ -43,8 +43,11 @@ public class InputModuleActionAdapter : MonoBehaviour
 			inputModule.CancelAction = actions.Cancel;
 			inputModule.MoveAction = actions.Move;
 		}
-		// make sure that only player one's device can navigate the UI
-		actions.Device = InputManager.Devices [0];
+        // make sure that only player one's device can navigate the UI
+        //if (InputManager.Devices.Count > 0)
+        //{
+        //    actions.Device = InputManager.Devices[0];
+        //}
 	
 	}
 
