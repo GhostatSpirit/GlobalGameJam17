@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using InControl;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement: MonoBehaviour {
 
@@ -79,6 +80,11 @@ public class PlayerMovement: MonoBehaviour {
 		if(myInputDevice == null){
 			return;
 		}
+
+        if (myInputDevice.CommandWasPressed)
+        {
+            SceneManager.LoadScene(0);
+        }
 
 		float horizontal = myInputDevice.LeftStickX;
 		float vertical = myInputDevice.LeftStickY;
