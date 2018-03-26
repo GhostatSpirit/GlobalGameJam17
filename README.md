@@ -29,3 +29,4 @@ Credits:
 Sound effects are made with BFXR.
 
 Map background music by cynicmusic: http://opengameart.org/content/awake-megawall-10
+2D Light Effect based on: https://github.com/prime31/SpriteLightKit (Modified)
